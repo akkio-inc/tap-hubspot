@@ -37,11 +37,6 @@ class CallsStream(HubspotStream):
     primary_keys = ["id"]
     rest_method = "POST"
 
-    def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
-        return {}
-
     @property
     def schema(self) -> dict:
         if self.cached_schema is None:
@@ -57,11 +52,6 @@ class OwnersStream(HubspotStream):
     partitions = []
     rest_method = "POST"
 
-    def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
-        return {}
-
 
 class CompaniesStream(HubspotStream):
     """Define custom stream."""
@@ -71,11 +61,6 @@ class CompaniesStream(HubspotStream):
     primary_keys = ["id"]
     partitions = []
     rest_method = "POST"
-
-    def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
-        return {}
 
     @property
     def schema(self) -> dict:
@@ -95,11 +80,6 @@ class DealsStream(HubspotStream):
     primary_keys = ["id"]
     partitions = []
     rest_method = "POST"
-
-    def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
-        return {}
 
     @property
     def schema(self) -> dict:
@@ -123,11 +103,6 @@ class ContactsStream(HubspotStream):
     primary_keys = ["id"]
     partitions = []
     rest_method = "POST"
-
-    def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
-        return {}
 
     @property
     def schema(self) -> dict:
