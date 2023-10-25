@@ -40,9 +40,7 @@ class CallsStream(HubspotStream):
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
-        params = super().get_url_params(context, next_page_token)
-        params["properties"] = ",".join(self.properties)
-        return params
+        return {}
 
     @property
     def schema(self) -> dict:
@@ -62,9 +60,7 @@ class OwnersStream(HubspotStream):
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
-        params = super().get_url_params(context, next_page_token)
-        params["archived"] = context["archived"]
-        return params
+        return {}
 
 
 class CompaniesStream(HubspotStream):
@@ -79,11 +75,7 @@ class CompaniesStream(HubspotStream):
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
-        params = super().get_url_params(context, next_page_token)
-        params["properties"] = ",".join(self.properties)
-        params["archived"] = context["archived"]
-        params["associations"] = ",".join(HUBSPOT_OBJECTS)
-        return params
+        return {}
 
     @property
     def schema(self) -> dict:
@@ -107,11 +99,7 @@ class DealsStream(HubspotStream):
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
-        params = super().get_url_params(context, next_page_token)
-        params["properties"] = ",".join(self.properties)
-        params["archived"] = context["archived"]
-        params["associations"] = ",".join(HUBSPOT_OBJECTS)
-        return params
+        return {}
 
     @property
     def schema(self) -> dict:
@@ -139,11 +127,7 @@ class ContactsStream(HubspotStream):
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
-        params = super().get_url_params(context, next_page_token)
-        params["properties"] = ",".join(self.properties)
-        params["archived"] = context["archived"]
-        params["associations"] = ",".join(HUBSPOT_OBJECTS)
-        return params
+        return {}
 
     @property
     def schema(self) -> dict:
