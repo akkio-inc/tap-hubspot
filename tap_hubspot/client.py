@@ -90,6 +90,11 @@ class HubspotStream(RESTStream):
     def prepare_request_payload(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Optional[dict]:
+        if self.rest_method == 'POST':
+            body = self.get_url_params(context, next_page_token)
+            body['properties'] = self.properties
+            return body
+
         """Prepare the data payload for the REST API request.
 
         By default, no payload will be sent (return None).

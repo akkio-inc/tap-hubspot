@@ -33,8 +33,9 @@ class MeetingsStream(HubspotStream):
 
 class CallsStream(HubspotStream):
     name = "calls"
-    path = "/crm/v3/objects/calls"
+    path = "/crm/v3/objects/calls/search"
     primary_keys = ["id"]
+    rest_method = "POST"
 
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
@@ -53,9 +54,10 @@ class CallsStream(HubspotStream):
 class OwnersStream(HubspotStream):
     """Define custom stream."""
     name = "owners"
-    path = "/crm/v3/owners"
+    path = "/crm/v3/owners/search"
     primary_keys = ["id"]
-    partitions = [{"archived": True}, {"archived": False}]
+    partitions = []
+    rest_method = "POST"
 
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
@@ -69,9 +71,10 @@ class CompaniesStream(HubspotStream):
     """Define custom stream."""
 
     name = "companies"
-    path = "/crm/v3/objects/companies"
+    path = "/crm/v3/objects/companies/search"
     primary_keys = ["id"]
-    partitions = [{"archived": True}, {"archived": False}]
+    partitions = []
+    rest_method = "POST"
 
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
@@ -96,9 +99,10 @@ class CompaniesStream(HubspotStream):
 class DealsStream(HubspotStream):
     """Define custom stream."""
     name = "deals"
-    path = "/crm/v3/objects/deals"
+    path = "/crm/v3/objects/deals/search"
     primary_keys = ["id"]
-    partitions = [{"archived": True}, {"archived": False}]
+    partitions = []
+    rest_method = "POST"
 
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
@@ -127,9 +131,10 @@ class ContactsStream(HubspotStream):
     """Define custom stream."""
 
     name = "contacts"
-    path = "/crm/v3/objects/contacts"
+    path = "/crm/v3/objects/contacts/search"
     primary_keys = ["id"]
-    partitions = [{"archived": True}, {"archived": False}]
+    partitions = []
+    rest_method = "POST"
 
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
