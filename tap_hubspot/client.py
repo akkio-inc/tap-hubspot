@@ -12,6 +12,8 @@ from singer_sdk.exceptions import RetriableAPIError
 from singer_sdk.helpers.jsonpath import extract_jsonpath
 from singer_sdk.streams import RESTStream
 
+from tap_hubspot.hotglue_auth import OAuth2Authenticator
+
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 HUBSPOT_OBJECTS = [
     "deals",
@@ -39,18 +41,18 @@ class HubspotStream(RESTStream):
     replication_method = "INCREMENTAL"
     cached_schema = None
     properties = []
+    _authenticator = None
 
     @property
     def schema_filepath(self) -> Path:
         return SCHEMAS_DIR / f"{self.name}.json"
 
     @property
-    def authenticator(self) -> BearerTokenAuthenticator:
+    def authenticator(self) -> OAuth2Authenticator:
         """Return a new authenticator object."""
-        return BearerTokenAuthenticator.create_for_stream(
-            self,
-            token=self.config.get("access_token"),
-        )
+        if self._authenticator is None:
+            self._authenticator = OAuth2Authenticator(self)
+        return self._authenticator
 
     @property
     def http_headers(self) -> dict:
@@ -58,9 +60,10 @@ class HubspotStream(RESTStream):
         headers = {}
         if "user_agent" in self.config:
             headers["User-Agent"] = self.config.get("user_agent")
-        if "access_token" in self.config:
-            headers["Authorization"] = f"Bearer {self.config.get('access_token')}"
-        return headers
+        # Some streams don't use the authenticator property, so aggressively shove it in
+        if self._authenticator is None:
+            self._authenticator = OAuth2Authenticator(self)
+        return self._authenticator.auth_headers
 
     def get_next_page_token(
         self, response: requests.Response, previous_token: Optional[Any]
