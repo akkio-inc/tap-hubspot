@@ -92,10 +92,22 @@ class TapHubspot(Tap):
 
     config_jsonschema = th.PropertiesList(
         th.Property(
-            "access_token",
+            "client_id",
             th.StringType,
             required=True,
-            description="PRIVATE Access Token for Hubspot API",
+            description="OAuth client id",
+        ),
+        th.Property(
+            "client_id",
+            th.StringType,
+            required=True,
+            description="OAuth client secret",
+        ),
+        th.Property(
+            "refresh_token",
+            th.StringType,
+            required=True,
+            description="OAuth refresh token",
         ),
         th.Property(
             "start_date",
