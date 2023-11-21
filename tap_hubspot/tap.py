@@ -98,7 +98,7 @@ class TapHubspot(Tap):
             description="OAuth client id",
         ),
         th.Property(
-            "client_id",
+            "client_secret",
             th.StringType,
             required=True,
             description="OAuth client secret",
@@ -112,8 +112,14 @@ class TapHubspot(Tap):
         th.Property(
             "start_date",
             th.DateTimeType,
-            required=True,
+            required=False,
             description="The earliest record date to sync",
+        ),
+        th.Property(
+            "properties",
+            th.ArrayType(th.StringType),
+            required=True,
+            description="Comma-separated list of properties, else get all"
         ),
     ).to_dict()
 
