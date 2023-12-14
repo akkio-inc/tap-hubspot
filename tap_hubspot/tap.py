@@ -101,6 +101,7 @@ class TapHubspot(Tap):
             "client_secret",
             th.StringType,
             required=True,
+            secret=True,
             description="OAuth client secret",
         ),
         th.Property(
@@ -119,7 +120,7 @@ class TapHubspot(Tap):
             "properties",
             th.ArrayType(th.StringType),
             required=True,
-            description="Comma-separated list of properties, else get all"
+            description="Comma-separated list of properties",
         ),
     ).to_dict()
 
