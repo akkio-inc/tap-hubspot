@@ -77,7 +77,12 @@ class CompaniesStream(HubspotStream):
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
-        params["properties"] = ",".join(self.properties)
+        if "properties" in self.config:
+            # We've passed in params in the tap config
+            params["properties"] = ",".join(self.config["properties"])
+        else:
+            # No params; default to getting all
+            params["properties"] = ",".join(self.properties)
         params["archived"] = context["archived"]
         params["associations"] = ",".join(HUBSPOT_OBJECTS)
         return params
@@ -86,6 +91,12 @@ class CompaniesStream(HubspotStream):
     def schema(self) -> dict:
         if self.cached_schema is None:
             self.cached_schema, self.properties = self.get_custom_schema()
+
+        if "properties" in self.config:
+            # Trim down the schema only if we've passed in params in the tap config
+            p = self.cached_schema['properties']['properties']['properties']
+            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config["properties"])) }
+
         return self.cached_schema
 
     def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
@@ -104,7 +115,12 @@ class DealsStream(HubspotStream):
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
-        params["properties"] = ",".join(self.properties)
+        if "properties" in self.config:
+            # We've passed in params in the tap config
+            params["properties"] = ",".join(self.config["properties"])
+        else:
+            # No params; default to getting all
+            params["properties"] = ",".join(self.properties)
         params["archived"] = context["archived"]
         params["associations"] = ",".join(HUBSPOT_OBJECTS)
         return params
@@ -113,6 +129,12 @@ class DealsStream(HubspotStream):
     def schema(self) -> dict:
         if self.cached_schema is None:
             self.cached_schema, self.properties = self.get_custom_schema()
+
+        if "properties" in self.config:
+            # Trim down the schema only if we've passed in params in the tap config
+            p = self.cached_schema['properties']['properties']['properties']
+            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config["properties"])) }
+
         return self.cached_schema
 
     def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
@@ -130,12 +152,19 @@ class ContactsStream(HubspotStream):
     path = "/crm/v3/objects/contacts"
     primary_keys = ["id"]
     partitions = [{"archived": True}, {"archived": False}]
+    # We join on the "owners" table in postprocessing, so we need to include these fields
+    REQUIRED_PROPERTIES = ["hubspot_owner_id", "ownername", "owneremail"]
 
     def get_url_params(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
-        params["properties"] = ",".join(self.properties)
+        if "properties" in self.config:
+            # We've passed in params in the tap config
+            params["properties"] = ",".join(self.config["properties"])
+        else:
+            # No params; default to getting all
+            params["properties"] = ",".join(self.properties)
         params["archived"] = context["archived"]
         params["associations"] = ",".join(HUBSPOT_OBJECTS)
         return params
@@ -144,6 +173,12 @@ class ContactsStream(HubspotStream):
     def schema(self) -> dict:
         if self.cached_schema is None:
             self.cached_schema, self.properties = self.get_custom_schema()
+
+        if "properties" in self.config:
+            # Trim down the schema only if we've passed in params in the tap config
+            p = self.cached_schema['properties']['properties']['properties']
+            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config["properties"] + self.REQUIRED_PROPERTIES)) }
+
         return self.cached_schema
 
     def get_child_context(self, record: dict, context: Optional[dict]) -> dict:
