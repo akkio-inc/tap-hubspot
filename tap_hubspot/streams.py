@@ -11,6 +11,12 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 utc = pytz.UTC
 
+HUBSPOT_DEALS_IS_CLOSED_WON = "hs_is_closed_won"
+HUBPPOT_DEALS_IS_CLOSED = "hs_is_closed"
+
+COMPANIES_PROPERTIES = "companies_properties"
+CONTACTS_PROPERTIES = "contacts_properties"
+DEALS_PROPERTIES = "deals_properties"
 
 class MeetingsStream(HubspotStream):
     name = "meetings"
@@ -77,9 +83,9 @@ class CompaniesStream(HubspotStream):
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
-        if "properties" in self.config:
+        if COMPANIES_PROPERTIES in self.config:
             # We've passed in params in the tap config
-            params["properties"] = ",".join(self.config["properties"])
+            params["properties"] = ",".join(self.config[COMPANIES_PROPERTIES])
         else:
             # No params; default to getting all
             params["properties"] = ",".join(self.properties)
@@ -92,10 +98,10 @@ class CompaniesStream(HubspotStream):
         if self.cached_schema is None:
             self.cached_schema, self.properties = self.get_custom_schema()
 
-        if "properties" in self.config:
+        if COMPANIES_PROPERTIES in self.config:
             # Trim down the schema only if we've passed in params in the tap config
             p = self.cached_schema['properties']['properties']['properties']
-            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config["properties"])) }
+            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config[COMPANIES_PROPERTIES])) }
 
         return self.cached_schema
 
@@ -115,9 +121,9 @@ class DealsStream(HubspotStream):
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
-        if "properties" in self.config:
+        if DEALS_PROPERTIES in self.config:
             # We've passed in params in the tap config
-            params["properties"] = ",".join(self.config["properties"])
+            params["properties"] = ",".join(self.config[DEALS_PROPERTIES])
         else:
             # No params; default to getting all
             params["properties"] = ",".join(self.properties)
@@ -130,10 +136,15 @@ class DealsStream(HubspotStream):
         if self.cached_schema is None:
             self.cached_schema, self.properties = self.get_custom_schema()
 
-        if "properties" in self.config:
+        if DEALS_PROPERTIES in self.config:
             # Trim down the schema only if we've passed in params in the tap config
             p = self.cached_schema['properties']['properties']['properties']
-            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config["properties"])) }
+            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config[DEALS_PROPERTIES])) }
+            """
+            # Always include some deal parameters so we can join to companies and contacts
+            closed_fields = [HUBSPOT_DEALS_IS_CLOSED_WON, HUBPPOT_DEALS_IS_CLOSED]
+            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config["properties"] + closed_fields)) }
+            """
 
         return self.cached_schema
 
@@ -159,9 +170,9 @@ class ContactsStream(HubspotStream):
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Dict[str, Any]:
         params = super().get_url_params(context, next_page_token)
-        if "properties" in self.config:
+        if CONTACTS_PROPERTIES in self.config:
             # We've passed in params in the tap config
-            params["properties"] = ",".join(self.config["properties"])
+            params["properties"] = ",".join(self.config[CONTACTS_PROPERTIES])
         else:
             # No params; default to getting all
             params["properties"] = ",".join(self.properties)
@@ -174,10 +185,10 @@ class ContactsStream(HubspotStream):
         if self.cached_schema is None:
             self.cached_schema, self.properties = self.get_custom_schema()
 
-        if "properties" in self.config:
+        if CONTACTS_PROPERTIES in self.config:
             # Trim down the schema only if we've passed in params in the tap config
             p = self.cached_schema['properties']['properties']['properties']
-            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config["properties"] + self.REQUIRED_PROPERTIES)) }
+            self.cached_schema["properties"]["properties"]["properties"] = { key: p[key] for key in p.keys() if key in list(set(self.config[CONTACTS_PROPERTIES] + self.REQUIRED_PROPERTIES)) }
 
         return self.cached_schema
 
