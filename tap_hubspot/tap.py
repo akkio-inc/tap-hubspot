@@ -117,7 +117,19 @@ class TapHubspot(Tap):
             description="The earliest record date to sync",
         ),
         th.Property(
-            "properties",
+            "companies_properties",
+            th.ArrayType(th.StringType),
+            required=True,
+            description="Comma-separated list of properties",
+        ),
+        th.Property(
+            "contacts_properties",
+            th.ArrayType(th.StringType),
+            required=True,
+            description="Comma-separated list of properties",
+        ),
+        th.Property(
+            "deals_properties",
             th.ArrayType(th.StringType),
             required=True,
             description="Comma-separated list of properties",
